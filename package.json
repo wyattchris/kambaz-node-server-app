@@ -1,0 +1,24 @@
+{
+  "type": "module",
+  "name": "kambaz-node-server-app",
+  "version": "1.0.0",
+  "description": "Node.js web server for kambaz app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wyattchris/kambaz-node-server-app.git"
+  },
+  "author": "Chris Wyatt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wyattchris/kambaz-node-server-app/issues"
+  },
+  "homepage": "https://github.com/wyattchris/kambaz-node-server-app#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
