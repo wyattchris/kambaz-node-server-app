@@ -1,4 +1,3 @@
-// TODO: Fix create module
 import model from "../Courses/model.js";
 import { v4 as uuidv4 } from "uuid";
 
