@@ -93,7 +93,7 @@ export default function QuizzesRoutes(app) {
         res.sendStatus(200);
     };
 
-    // Quiz routes
+    // quizzes
     app.get("/api/courses/:courseId/quizzes", findQuizzesForCourse);
     app.get("/api/quizzes/:quizId", findQuizById);
     app.post("/api/courses/:courseId/quizzes", createQuizForCourse);
@@ -101,7 +101,7 @@ export default function QuizzesRoutes(app) {
     app.delete("/api/quizzes/:quizId", deleteQuiz);
     app.put("/api/quizzes/:quizId/publish", publishQuiz);
 
-    // Question routes
+    // questions
     app.get("/api/quizzes/:quizId/questions", getQuestionsForQuiz);
     app.post("/api/quizzes/:quizId/questions", addQuestionToQuiz);
     app.put("/api/quizzes/:quizId/questions/:questionId", updateQuestion);

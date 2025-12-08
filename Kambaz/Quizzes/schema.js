@@ -11,25 +11,26 @@ const questionSchema = new mongoose.Schema({
         enum: QUESTION_TYPE_VALUES,
         required: true,
     },
-    choices: [{ // For Multiple Choice
+    // multiple choice question
+    choices: [{
         _id: String,
         text: String,
         isCorrect: Boolean,
     }],
-    correctAnswer: Boolean, // For True/False
-    possibleAnswers: [String], // For Fill in the Blank (case-insensitive)
-}, { _id: false });
+    // true/false quesiton
+    correctAnswer: Boolean,
+    // fill in the blank
+    possibleAnswers: [String], 
+});
 
-// Main Quiz schema
 const quizSchema = new mongoose.Schema({
     _id: String,
     title: String,
     description: String, 
     course: { type: String, ref: "CourseModel" },
     published: { type: Boolean, default: false },
-    points: { type: Number, default: 0 }, // Sum of all question points, auto-calculated
-    
-    // Quiz Configuration
+    // sum of all question points, calculated by server
+    points: { type: Number, default: 0 },    
     quizType: {
         type: String,
         enum: ["Graded Quiz", "Practice Quiz", "Graded Survey", "Ungraded Survey"],
@@ -44,16 +45,14 @@ const quizSchema = new mongoose.Schema({
     timeLimit: { type: Number, default: 20 },
     multipleAttempts: { type: Boolean, default: false },
     howManyAttempts: { type: Number, default: 1 },
-    showCorrectAnswers: String, // "Immediately", "After Due Date", "Never", etc.
+    showCorrectAnswers: String,
     accessCode: { type: String, default: "" },
     oneQuestionAtATime: { type: Boolean, default: true },
     webcamRequired: { type: Boolean, default: false },
     lockQuestionsAfterAnswering: { type: Boolean, default: false },
-    
     dueDate: Date,
     availableDate: Date,
     availableUntilDate: Date,
-    
     questions: [questionSchema],
 }, { collection: "quizzes" });
 

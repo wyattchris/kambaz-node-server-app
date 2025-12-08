@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
 import model from "./model.js";
-import quizModel from "../Quizzes/model.js";
 import { QUESTION_TYPES } from "../Quizzes/constants.js";
 
 export default function QuizAttemptsDao() {
@@ -12,14 +11,13 @@ export default function QuizAttemptsDao() {
         return model.findById(attemptId);
     }
 
-    async function createAttempt(quizId, studentId, attemptData) {
-        const quiz = await quizModel.findById(quizId);
-        const existingAttempts = await model.find({ quiz: quizId, student: studentId });
+    async function createAttempt(quiz, studentId, attemptData) {
+        const existingAttempts = await model.find({ quiz: quiz._id, student: studentId });
         const nextAttemptNumber = existingAttempts.length + 1;
 
         const newAttempt = {
             _id: uuidv4(),
-            quiz: quizId,
+            quiz: quiz._id,
             student: studentId,
             attemptNumber: nextAttemptNumber,
             startedAt: attemptData.startedAt || new Date(),
@@ -36,22 +34,8 @@ export default function QuizAttemptsDao() {
         return model.create(newAttempt);
     }
 
-    async function updateAttempt(attemptId, updates) {
+    async function calculateScore(attemptId, quiz) {
         const attempt = await model.findById(attemptId);
-        
-        if (updates.submittedAt && !attempt.submittedAt) {
-            const quiz = await quizModel.findById(attempt.quiz);
-            const updatedAttempt = { ...attempt.toObject(), ...updates };
-            updates.score = calculateScoreForAttempt(updatedAttempt, quiz);
-            updates.answers = updatedAttempt.answers;
-        }
-
-        return model.updateOne({ _id: attemptId }, { $set: updates });
-    }
-
-    async function calculateScore(attemptId) {
-        const attempt = await model.findById(attemptId);
-        const quiz = await quizModel.findById(attempt.quiz);
         const attemptObj = attempt.toObject();
         const score = calculateScoreForAttempt(attemptObj, quiz);
         await model.updateOne(
@@ -103,7 +87,6 @@ export default function QuizAttemptsDao() {
         findAttemptsForStudent,
         findAttemptById,
         createAttempt,
-        updateAttempt,
         calculateScore,
     };
 }

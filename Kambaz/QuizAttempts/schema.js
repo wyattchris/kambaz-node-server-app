@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const answerSchema = new mongoose.Schema({
     questionId: String, 
-    // Multiple Choice: String (the choice _id that the student selected)
-    // True/False: Boolean
-    // Fill in the Blank: String
+    // MC: String (the choice _id that the student selected)
+    // T/F: Boolean answer
+    // FIB: String answer
     answer: mongoose.Schema.Types.Mixed, 
-    // Calculated when the attempt is submitted by the backend
+    // calculated when the attempt is submitted by the backend
     isCorrect: Boolean,
     pointsEarned: Number,
 }, { _id: false });

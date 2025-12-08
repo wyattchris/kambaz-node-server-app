@@ -1,6 +1,8 @@
 import QuizAttemptsDao from "./dao.js";
+import QuizzesDao from "../Quizzes/dao.js";
 
 export default function QuizAttemptsRoutes(app) {
+    const quizzesDao = QuizzesDao();
     const dao = QuizAttemptsDao();
 
     const findAttemptsForCurrentUser = async (req, res) => {
@@ -31,32 +33,21 @@ export default function QuizAttemptsRoutes(app) {
             res.sendStatus(401);
             return;
         }
+        const quiz = await quizzesDao.findQuizById(quizId);
+        if (!quiz) {
+            res.sendStatus(404);
+            return;
+        }
         const attemptData = {
             ...req.body,
             startedAt: req.body.startedAt || new Date(),
         };
-        const newAttempt = await dao.createAttempt(quizId, currentUser._id, attemptData);
+        const newAttempt = await dao.createAttempt(quiz, currentUser._id, attemptData);
         res.json(newAttempt);
-    };
-
-    const updateAttempt = async (req, res) => {
-        const { attemptId } = req.params;
-        const updates = req.body;
-        const status = await dao.updateAttempt(attemptId, updates);
-        if (status.modifiedCount > 0) {
-            if (updates.submittedAt) {
-                await dao.calculateScore(attemptId);
-            }
-            const updatedAttempt = await dao.findAttemptById(attemptId);
-            res.json(updatedAttempt);
-        } else {
-            res.sendStatus(404);
-        }
     };
 
     app.get("/api/quizzes/:quizId/attempts/current", findAttemptsForCurrentUser);
     app.get("/api/attempts/:attemptId", findAttemptById);
     app.post("/api/quizzes/:quizId/attempts", createAttempt);
-    app.put("/api/attempts/:attemptId", updateAttempt);
 }
 
